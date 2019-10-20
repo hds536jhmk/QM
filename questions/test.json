@@ -1,0 +1,104 @@
+{
+  "settings": {
+    "points": {
+      "trueAnswer": 3.0,
+      "falseAnswer": -0.5,
+      "bestVote": 10.0,
+      "worstVote": 3.0
+    },
+    "questionsPerColumn": 2,
+    "pad": {
+      "x": 20,
+      "y": 0
+    }
+  },
+  "title": {
+    "text": "Q&A"
+  },
+  "questions": [
+    {
+      "text": "1 o 2?",
+      "answers": [
+        {
+          "text": "1",
+          "isCorrect": false
+        },
+        {
+          "text": "2",
+          "isCorrect": true
+        },
+        {
+          "text": "3",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "3 o 4?",
+      "answers": [
+        {
+          "text": "1",
+          "isCorrect": false
+        },
+        {
+          "text": "2",
+          "isCorrect": true
+        },
+        {
+          "text": "3",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "3 o 3?",
+      "answers": [
+        {
+          "text": "1",
+          "isCorrect": false
+        },
+        {
+          "text": "2",
+          "isCorrect": true
+        },
+        {
+          "text": "3",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "3 o 5?",
+      "answers": [
+        {
+          "text": "1",
+          "isCorrect": false
+        },
+        {
+          "text": "2",
+          "isCorrect": true
+        },
+        {
+          "text": "5",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "settings": {
+    "points": {
+      "trueAnswer": 3.0,
+      "falseAnswer": -0.5,
+      "bestVote": 10.0,
+      "worstVote": 3.0
+    },
+    "questionsPerColumn": 2,
+    "pad": {
+      "x": 20,
+      "y": 0
+    }
+  },
+  "title": {
+    "text": "Subject"
+  },
+  "questions": [
+    {
+      "text": "Question 1",
+      "answers": [
+        {
+          "text": "Answer 1",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 2",
+          "isCorrect": true
+        },
+        {
+          "text": "Answer 3",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 4",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Question 2",
+      "answers": [
+        {
+          "text": "Answer 1",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 2",
+          "isCorrect": true
+        },
+        {
+          "text": "Answer 3",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Question 3",
+      "answers": [
+        {
+          "text": "Answer 1",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 2",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "Question 4",
+      "answers": [
+        {
+          "text": "Answer 1",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 2",
+          "isCorrect": true
+        },
+        {
+          "text": "Answer 5",
+          "isCorrect": false
+        },
+        {
+          "text": "Answer 4",
+          "isCorrect": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,12 +1,7 @@
 {
-  "questConfig": {
-    "points": {
-      "trueAnswer": 3,
-      "falseAnswer": -0.5
-    }
-  },
+  "questionGroup": "template.json",
   "mainWindow": {
-    "title": "QM",
+    "title": "Questionary",
     "size": {
       "width": 400,
       "height": 200
@@ -16,23 +11,39 @@
       "height": false
     },
     "children": {
-      "lTitle": {
-        "caption": "Super cool title",
-        "font": {
-          "name": "Comic Sans MS",
-          "size": 10,
-          "style": "italic"
+      "fTop": {
+        "children": {
+          "lTitle": {
+            "text": "Questionary:",
+            "font": {
+              "family": "Comic Sans MS",
+              "size": 10,
+              "slant": "italic"
+            }
+          }
         }
       },
-      "bConfirm": {
-        "caption": "Confirm answers"
+      "fMiddle": {
+        "children": {}
       },
-      "lPoints": {
-        "caption": "Points: ",
-        "font": {
-          "name": "Comic Sans MS",
-          "size": 10,
-          "style": "italic"
+      "fBottom": {
+        "children": {
+          "bConfirm": {
+            "text": "Confirm answers",
+            "font": {
+              "family": "Comic Sans MS",
+              "size": 10,
+              "slant": "italic"
+            }
+          },
+          "lPoints": {
+            "text": "Points - Vote: ",
+            "font": {
+              "family": "Comic Sans MS",
+              "size": 10,
+              "slant": "italic"
+            }
+          }
         }
       }
     }
