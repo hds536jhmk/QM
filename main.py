@@ -56,14 +56,35 @@ class App:
     def checkAnswers(self):
         # Reset current points
         self.points = 0
+        maxPoints = 0
 
-        # Loop through every question
+        # Loop through every question & calculate points and max points
         for question in self.questions:
+            if 'points' in question.question:
+                if 'trueAnswer' in question.question['points']:
+                    maxPoints += question.question['points']['trueAnswer']
+                else:
+                    maxPoints +=self.questionsConfig['points']['trueAnswer']
+            else:
+                maxPoints += self.questionsConfig['points']['trueAnswer']
+
             # Check if question is correct and add points accordingly
             if question.check():
-                self.points += self.questionsConfig['points']['trueAnswer']
+                if 'points' in question.question:
+                    if 'trueAnswer' in question.question['points']:
+                        self.points += question.question['points']['trueAnswer']
+                    else:
+                        self.points += self.questionsConfig['points']['trueAnswer']
+                else:
+                    self.points += self.questionsConfig['points']['trueAnswer']
             else:
-                self.points += self.questionsConfig['points']['falseAnswer']
+                if 'points' in question.question:
+                    if 'falseAnswer' in question.question['points']:
+                        self.points += question.question['points']['falseAnswer']
+                    else:
+                        self.points += self.questionsConfig['points']['falseAnswer']
+                else:
+                    self.points += self.questionsConfig['points']['falseAnswer']
 
         # If the points are less than 0 set them to 0
         if self.points < 0:
@@ -72,7 +93,7 @@ class App:
         # Calculate vote based on Questions Config
         worstVote = self.questionsConfig['points']['worstVote']
         bestVote = self.questionsConfig['points']['bestVote']
-        vote = map(self.points, 0, self.questionsConfig['points']['trueAnswer'] * len(self.questions), 1, bestVote)
+        vote = map(self.points, 0, maxPoints, 1, bestVote)
         vote = betterRound(vote, 1, .5)
 
         # If vote is less than the worst one set the vote to it
@@ -80,7 +101,7 @@ class App:
             vote = worstVote
 
         # Change points label
-        self.lPoints.config(text=self.childFBottomSettings['lPoints']['text'] + str(self.points) + ' - ' + str(vote))
+        self.lPoints.config(text=self.childFBottomSettings['lPoints']['text'] + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
         self.lPoints.pack(side=tk.RIGHT, anchor=tk.S)
 
     # Utility function that sets object options based on a config

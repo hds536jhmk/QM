@@ -18,6 +18,10 @@
   "questions": [
     {
       "text": "Question 1",
+      "points": {
+        "trueAnswer": 10,
+        "falseAnswer": -1
+      },
       "answers": [
         {
           "text": "Answer 1",
