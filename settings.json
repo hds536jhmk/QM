@@ -1,0 +1,40 @@
+{
+  "questConfig": {
+    "points": {
+      "trueAnswer": 3,
+      "falseAnswer": -0.5
+    }
+  },
+  "mainWindow": {
+    "title": "QM",
+    "size": {
+      "width": 400,
+      "height": 200
+    },
+    "resizeable": {
+      "width": false,
+      "height": false
+    },
+    "children": {
+      "lTitle": {
+        "caption": "Super cool title",
+        "font": {
+          "name": "Comic Sans MS",
+          "size": 10,
+          "style": "italic"
+        }
+      },
+      "bConfirm": {
+        "caption": "Confirm answers"
+      },
+      "lPoints": {
+        "caption": "Points: ",
+        "font": {
+          "name": "Comic Sans MS",
+          "size": 10,
+          "style": "italic"
+        }
+      }
+    }
+  }
+}
