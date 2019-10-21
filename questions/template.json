@@ -7,9 +7,27 @@
       "worstVote": 3.0
     },
     "questionsPerColumn": 2,
-    "pad": {
-      "x": 20,
-      "y": 0
+    "questions": {
+      "font": {
+        "family": "Comic Sans MS",
+        "size": 10,
+        "weight": "bold"
+      },
+      "pad": {
+        "x": 20,
+        "y": 0
+      }
+    },
+    "answers": {
+      "font": {
+        "family": "Comic Sans MS",
+        "size": 10,
+        "slant": "italic"
+      },
+      "pad": {
+        "x": 20,
+        "y": 0
+      }
     }
   },
   "title": {

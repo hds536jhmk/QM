@@ -119,7 +119,9 @@ class App:
 
         if 'font' in objectConfig:
             _font = objectConfig['font']
-            newFont = tkf.Font()
+            # Create new font that uses widget's font as the starting font
+            newFont = tkf.Font(font=widget['font'])
+            # Modify widget's font based on object config
             if 'family' in _font:
                 newFont.config(family=_font['family'])
             if 'size' in _font:
@@ -186,8 +188,9 @@ class App:
 
             # Create Question label
             _qTitleLabel = tk.Label(self.fMiddle)
+            if 'questions' in self.questionsConfig:
+                self.configWidget(_qTitleLabel, self.questionsConfig['questions'])
             self.configWidget(_qTitleLabel, question)
-            self.configWidget(_qTitleLabel, self.questionsConfig)
             _qTitleLabel.grid(row=_questionRow, column=_questionColumn)
 
             # Loop through every answer
@@ -196,8 +199,9 @@ class App:
             for answer in question['answers']:
                 # Create a radiobutton for every answer
                 _qRadioButton = tk.Radiobutton(self.fMiddle, variable=var, value=aI)
+                if 'answers' in self.questionsConfig:
+                    self.configWidget(_qRadioButton, self.questionsConfig['answers'])
                 self.configWidget(_qRadioButton, answer)
-                self.configWidget(_qRadioButton, self.questionsConfig)
                 _qRadioButton.grid(row=aI + _questionRow + 1, column=_questionColumn)
 
                 # Add answer to the question
