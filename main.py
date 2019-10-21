@@ -34,8 +34,8 @@ class Question:
         self.answers = []
 
     # Adds an answer to the answers array
-    def addAnswer(self, answer, rb):
-        self.answers.append([answer, rb])
+    def addAnswer(self, answer, rg, rb=None):
+        self.answers.append([answer, rg, rb])
 
     # Checks if the answer is correct
     def check(self):
@@ -46,9 +46,10 @@ class Question:
             if answer[0]['isCorrect']:
                 # Checks if the pressed radiobutton is the correct one
                 if answer[1].get() == i:
-                    # If so it return true
+                    # If so it returns true
                     return True
             i += 1
+        return False
 
 
 class App:
@@ -103,6 +104,30 @@ class App:
         # Change points label
         self.lPoints.config(text=self.childFBottomSettings['lPoints']['text'] + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
         self.lPoints.pack(side=tk.RIGHT, anchor=tk.S)
+
+    # Makes every radioButton that is the correct answer have the foreground color specified and vice-versa
+    def showSolutions(self):
+        # Switch Showing Solutions boolean
+        self.showingSolutions = not self.showingSolutions
+        # Loop through every question
+        for question in self.questions:
+            # Loop through every answer
+            for answer in question.answers:
+                # Check if the answer is correct
+                if answer[0]['isCorrect']:
+                    # Get correct answer's radioButton
+                    radioButton = answer[2]
+                    # If solutions have to be shown then change radioButton's color and vice-versa
+                    if self.showingSolutions:
+                        if 'trueAnswerColor' in self.questionsConfig:
+                            radioButton.config(fg=self.questionsConfig['trueAnswerFG'])
+                        else:
+                            radioButton.config(fg=settings['trueAnswerFG'])
+                    else:
+                        radioButton.config(fg='black')
+                        if 'answers' in self.questionsConfig:
+                            self.configWidget(radioButton, self.questionsConfig['answers'])
+                        self.configWidget(radioButton, answer[0])
 
     # Utility function that sets object options based on a config
     def configWidget(self, widget, objectConfig):
@@ -205,7 +230,7 @@ class App:
                 _qRadioButton.grid(row=aI + _questionRow + 1, column=_questionColumn)
 
                 # Add answer to the question
-                _question.addAnswer(answer, var)
+                _question.addAnswer(answer, var, _qRadioButton)
                 aI += 1
 
             # Append question to the questions array
@@ -213,6 +238,11 @@ class App:
             qI += 1
 
 
+
+        # Create Solutions button
+        self.bSolutions = tk.Button(self.fBottom, command=self.showSolutions)
+        self.configWidget(self.bSolutions, self.childFBottomSettings['bSolutions'])
+        self.bSolutions.pack(side=tk.TOP, anchor=tk.N, fill=tk.X)
 
         # Create confirm button
         self.bConfirm = tk.Button(self.fBottom, command=self.checkAnswers)
@@ -226,6 +256,7 @@ class App:
     def __init__(self, root):
         self.root = root
         self.points = 0
+        self.showingSolutions = False
         self.questions = []
         self.questionsConfig = questions['settings']
         self.childMainWindowSettings = settings['mainWindow']['children']

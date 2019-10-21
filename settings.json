@@ -1,5 +1,7 @@
 {
   "questionGroup": "template.json",
+  "trueAnswerFG": "green",
+  "falseAnswerFG": "red",
   "mainWindow": {
     "title": "Questionary",
     "size": {
@@ -28,6 +30,14 @@
       },
       "fBottom": {
         "children": {
+          "bSolutions": {
+            "text": "Check Answers",
+            "font": {
+              "family": "Comic Sans MS",
+              "size": 10,
+              "slant": "italic"
+            }
+          },
           "bConfirm": {
             "text": "Confirm answers",
             "font": {
