@@ -2,25 +2,31 @@
 # IMPORTING LIBRARIES
 import tkinter as tk
 import tkinter.font as tkf
+import tkinter.filedialog as tkfd
 import json
 import math
 
-# GLOBAL VARIABLES
-settings = {}
-with open('./settings.json') as json_data:
-    settings = json.load(json_data)
-
-questions = {}
-with open('./questions/' + settings['questionGroup']) as json_data:
-    questions = json.load(json_data)
-
 # FUNCTIONS
+
+
+def loadJSON(path):
+    with open(path) as json_data:
+        return json.load(json_data)
+
 
 def map(value, minValue, maxValue, min, max):
     return (value - minValue) / (maxValue - minValue) * (max - min) + min
 
+
 def betterRound(x, precision, base):
   return round(base * round(float(x)/base), precision)
+
+
+# GLOBAL VARIABLES
+
+SETTINGSPATH = './settings.json'
+
+QUESTIONSFOLDER = './questions/'
 
 # GLOBAL CLASSES
 
@@ -52,6 +58,8 @@ class Question:
         return False
 
 
+# APP CLASS:
+#   holds all the program logic
 class App:
     # Checks through all questions and calculates points
     def checkAnswers(self):
@@ -65,7 +73,7 @@ class App:
                 if 'trueAnswer' in question.question['points']:
                     maxPoints += question.question['points']['trueAnswer']
                 else:
-                    maxPoints +=self.questionsConfig['points']['trueAnswer']
+                    maxPoints += self.questionsConfig['points']['trueAnswer']
             else:
                 maxPoints += self.questionsConfig['points']['trueAnswer']
 
@@ -102,7 +110,8 @@ class App:
             vote = worstVote
 
         # Change points label
-        self.lPoints.config(text=self.childFBottomSettings['lPoints']['text'] + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
+        self.lPoints.config(text=self.childFBottomSettings['lPoints']['text']
+                            + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
         self.lPoints.pack(side=tk.RIGHT, anchor=tk.S)
 
     # Makes every radioButton that is the correct answer have the foreground color specified and vice-versa
@@ -122,7 +131,7 @@ class App:
                         if 'trueAnswerColor' in self.questionsConfig:
                             radioButton.config(fg=self.questionsConfig['trueAnswerFG'])
                         else:
-                            radioButton.config(fg=settings['trueAnswerFG'])
+                            radioButton.config(fg=self.settings['trueAnswerFG'])
                     else:
                         radioButton.config(fg='black')
                         if 'answers' in self.questionsConfig:
@@ -130,17 +139,19 @@ class App:
                         self.configWidget(radioButton, answer[0])
 
     # Utility function that sets object options based on a config
-    def configWidget(self, widget, objectConfig):
+    def configWidget(self, widget, objectConfig, configCommand=None):
+        if configCommand is None:
+            configCommand = widget.config
         if 'text' in objectConfig:
-            widget.config(text=objectConfig['text'])
+            configCommand(text=objectConfig['text'])
 
         if 'colors' in objectConfig:
             _colors = objectConfig['colors']
             if 'bg' in _colors:
-                widget.config(background=_colors['bg'])
+                configCommand(background=_colors['bg'])
 
             if 'fg' in _colors:
-                widget.config(foreground=_colors['fg'])
+                configCommand(foreground=_colors['fg'])
 
         if 'font' in objectConfig:
             _font = objectConfig['font']
@@ -159,46 +170,25 @@ class App:
                 newFont.config(underline=_font['underline'])
             if 'overstrike' in _font:
                 newFont.config(overstrike=_font['overstrike'])
-            widget.config(font=newFont)
+            configCommand(font=newFont)
 
         if 'pad' in objectConfig:
             _pad = objectConfig['pad']
             if 'x' in _pad:
-                widget.config(padx=_pad['x'])
+                configCommand(padx=_pad['x'])
             if 'y' in _pad:
-                widget.config(pady=_pad['y'])
+                configCommand(pady=_pad['y'])
 
-    # Creates every widget
-    def createWidgets(self):
-
-        # Create a frame that stays on the top of the application
-        self.fTop = tk.Frame(self.root)
-        self.configWidget(self.fTop, self.childMainWindowSettings['fTop'])
-        self.fTop.pack(side=tk.TOP, fill=tk.X)
-
-        # Create a frame that stays in the middle of the application
-        self.fMiddle = tk.Frame(self.root)
-        self.configWidget(self.fMiddle, self.childMainWindowSettings['fMiddle'])
-        self.fMiddle.pack(fill=tk.X)
-
-        # Create a frame that stays on the bottom of the application
-        self.fBottom = tk.Frame(self.root)
-        self.configWidget(self.fBottom, self.childMainWindowSettings['fBottom'])
-        self.fBottom.pack(side=tk.BOTTOM, fill=tk.X)
-
-        # Create Application Title
-        self.lTitle = tk.Label(self.fTop)
-        self.configWidget(self.lTitle, self.childFTopSettings['lTitle'])
-        self.lTitle.pack()
-
+    # Creates every widget that has to do with questions
+    def createQuestionsWidgets(self):
         # Create Questions Title
         self.lQuestionsTitle = tk.Label(self.fTop)
-        self.configWidget(self.lQuestionsTitle, questions['title'])
+        self.configWidget(self.lQuestionsTitle, self.questionsJSON['title'])
         self.lQuestionsTitle.pack()
 
         # Loop through every question in the questions json
         qI = 0
-        for question in questions['questions']:
+        for question in self.questionsJSON['questions']:
             # Create new question
             _question = Question(question)
 
@@ -237,7 +227,96 @@ class App:
             self.questions.append(_question)
             qI += 1
 
+    # Reloads Questions
+    def reloadQuestions(self):
+        # If it's showing solutions then switch it off
+        if self.showingSolutions:
+            self.showSolutions()
 
+        # Destroy every object related to old questions
+        self.lQuestionsTitle.destroy()
+        for widget in self.fMiddle.winfo_children():
+            widget.destroy()
+
+        # Reload questions JSON and variables
+        self.questionsJSON = loadJSON(self.questionsPATH)
+        self.questions = []
+        self.questionsConfig = self.questionsJSON['settings']
+
+        # Resets points and points' label
+        self.points = 0
+        self.lPoints.config(text='')
+
+        # Create questions' widgets
+        self.createQuestionsWidgets()
+
+    # Reloads the whole application
+    def reloadSettings(self):
+        # Destroy all widgets
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+        # Re-init of the class
+        self.__init__(self.root)
+
+    def openQuestions(self):
+        fdSettings = self.childMMenuBar['mmbFile']['commands']['openQuestions']['fileDialog']
+        questionsFilePath = tkfd.askopenfilename(initialdir=QUESTIONSFOLDER,
+                                                 title=fdSettings['title'],
+                                                 filetypes=(
+                                                     (fdSettings['fileTypes']['JSON'], '*.json'),
+                                                     (fdSettings['fileTypes']['all'], '*.*')))
+        self.questionsPATH = questionsFilePath
+        self.reloadQuestions()
+
+    # Creates every widget
+    def createWidgets(self):
+
+        # Create Menu Bar
+        self.mMenuBar = tk.Menu(self.root)
+        self.configWidget(self.mMenuBar, self.childRootSettings['mMenuBar'])
+
+        # Create File Menu
+        self.mmbFile = tk.Menu(self.mMenuBar, tearoff=0)
+        self.configWidget(self.mmbFile, self.childMMenuBar['mmbFile'])
+
+        self.mMenuBar.add_cascade(label=self.childMMenuBar['mmbFile']['label'], menu=self.mmbFile)
+
+        # Create File Menu Commands
+        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['openQuestions']['label'],
+                                 command=self.openQuestions)
+        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadQuestions']['label'],
+                                 command=self.reloadQuestions)
+        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadSettings']['label'],
+                                 command=self.reloadSettings)
+        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['exit']['label'],
+                                 command=self.root.quit)
+
+        # Add MenuBar to root
+        self.root.config(menu=self.mMenuBar)
+
+        # Create a frame that stays on the top of the application
+        self.fTop = tk.Frame(self.root)
+        self.configWidget(self.fTop, self.childRootSettings['fTop'])
+        self.fTop.pack(side=tk.TOP, fill=tk.X)
+
+        # Create a frame that stays in the middle of the application
+        self.fMiddle = tk.Frame(self.root)
+        self.configWidget(self.fMiddle, self.childRootSettings['fMiddle'])
+        self.fMiddle.pack(fill=tk.X)
+
+        # Create a frame that stays on the bottom of the application
+        self.fBottom = tk.Frame(self.root)
+        self.configWidget(self.fBottom, self.childRootSettings['fBottom'])
+        self.fBottom.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # Create Application Title
+        self.lTitle = tk.Label(self.fTop)
+        self.configWidget(self.lTitle, self.childFTopSettings['lTitle'])
+        self.lTitle.pack()
+
+        # Create questions' widgets
+        self.createQuestionsWidgets()
 
         # Create Solutions button
         self.bSolutions = tk.Button(self.fBottom, command=self.showSolutions)
@@ -253,25 +332,40 @@ class App:
         self.lPoints = tk.Label(self.fBottom)
         self.configWidget(self.lPoints, self.childFBottomSettings['lPoints'])
 
+    # Class init
     def __init__(self, root):
+        # Load settings
+        self.settings = loadJSON(SETTINGSPATH)
+
+        # Load questions
+        self.questionsPATH = QUESTIONSFOLDER + self.settings['questionGroup']
+        self.questionsJSON = loadJSON(self.questionsPATH)
+
+        # Get root and configure it
         self.root = root
+        self.rootSettings = self.settings['root']
+
+        self.root.title(self.rootSettings['title'])
+        self.root.iconbitmap(self.rootSettings['iconPATH'])
+        self.root.resizable(self.rootSettings['resizeable']['width'],
+                            self.rootSettings['resizeable']['height'])
+        self.root.minsize(self.rootSettings['size']['width'], self.rootSettings['size']['height'])
+
+        # Prepare class variables
         self.points = 0
         self.showingSolutions = False
         self.questions = []
-        self.questionsConfig = questions['settings']
-        self.childMainWindowSettings = settings['mainWindow']['children']
-        self.childFTopSettings = self.childMainWindowSettings['fTop']['children']
-        self.childFMiddleSettings = self.childMainWindowSettings['fMiddle']['children']
-        self.childFBottomSettings = self.childMainWindowSettings['fBottom']['children']
+        self.questionsConfig = self.questionsJSON['settings']
+        self.childRootSettings = self.settings['root']['children']
+        self.childMMenuBar = self.childRootSettings['mMenuBar']['children']
+        self.childFTopSettings = self.childRootSettings['fTop']['children']
+        self.childFMiddleSettings = self.childRootSettings['fMiddle']['children']
+        self.childFBottomSettings = self.childRootSettings['fBottom']['children']
         self.createWidgets()
 
 
 # CREATING MAIN WINDOW
 mainWindow = tk.Tk()
-mainWindow.title(settings['mainWindow']['title'])
-mainWindow.iconbitmap('./logo.ico')
-mainWindow.resizable(settings['mainWindow']['resizeable']['width'], settings['mainWindow']['resizeable']['height'])
-mainWindow.minsize(settings['mainWindow']['size']['width'], settings['mainWindow']['size']['height'])
 
 # INITIALIZING APP
 app = App(root=mainWindow)

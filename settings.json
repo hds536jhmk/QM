@@ -2,8 +2,9 @@
   "questionGroup": "template.json",
   "trueAnswerFG": "green",
   "falseAnswerFG": "red",
-  "mainWindow": {
+  "root": {
     "title": "Questionary",
+    "iconPATH": "./logo.ico",
     "size": {
       "width": 400,
       "height": 200
@@ -13,6 +14,34 @@
       "height": false
     },
     "children": {
+      "mMenuBar": {
+        "children": {
+          "mmbFile": {
+            "label": "File",
+            "commands": {
+              "openQuestions": {
+                "label": "Open Questions",
+                "fileDialog": {
+                  "title": "Select Questions' JSON",
+                  "fileTypes": {
+                    "JSON": "JSON files",
+                    "all": "All files"
+                  }
+                }
+              },
+              "reloadQuestions": {
+                "label": "Reload Questions"
+              },
+              "reloadSettings": {
+                "label": "Reload Settings"
+              },
+              "exit": {
+                "label": "Exit"
+              }
+            }
+          }
+        }
+      },
       "fTop": {
         "children": {
           "lTitle": {
