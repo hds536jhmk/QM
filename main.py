@@ -1,8 +1,8 @@
 
 # IMPORTING LIBRARIES
 import tkinter as tk
-import tkinter.font as tkf
-import tkinter.filedialog as tkfd
+from tkinter import font as tkf
+from tkinter import filedialog as tkfd
 import json
 import math
 
@@ -10,7 +10,7 @@ import math
 
 
 def loadJSON(path):
-    with open(path) as json_data:
+    with open(path, encoding='utf-8') as json_data:
         return json.load(json_data)
 
 
