@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import font as tkf
 from tkinter import filedialog as tkfd
+import os
 import json
 import math
 
@@ -202,25 +203,25 @@ class App:
                     _questionRow += len(self.questions[key].answers) + 1
 
             # Create Question label
-            _qTitleLabel = tk.Label(self.fMiddle)
+            questionLabel = tk.Label(self.fMiddle)
             if 'questions' in self.questionsConfig:
-                self.configWidget(_qTitleLabel, self.questionsConfig['questions'])
-            self.configWidget(_qTitleLabel, question)
-            _qTitleLabel.grid(row=_questionRow, column=_questionColumn)
+                self.configWidget(questionLabel, self.questionsConfig['questions'])
+            self.configWidget(questionLabel, question)
+            questionLabel.grid(row=_questionRow, column=_questionColumn)
 
             # Loop through every answer
             aI = 0
             var = tk.IntVar()
             for answer in question['answers']:
                 # Create a radiobutton for every answer
-                _qRadioButton = tk.Radiobutton(self.fMiddle, variable=var, value=aI)
+                answerRadioButton = tk.Radiobutton(self.fMiddle, variable=var, value=aI)
                 if 'answers' in self.questionsConfig:
-                    self.configWidget(_qRadioButton, self.questionsConfig['answers'])
-                self.configWidget(_qRadioButton, answer)
-                _qRadioButton.grid(row=aI + _questionRow + 1, column=_questionColumn)
+                    self.configWidget(answerRadioButton, self.questionsConfig['answers'])
+                self.configWidget(answerRadioButton, answer)
+                answerRadioButton.grid(row=aI + _questionRow + 1, column=_questionColumn)
 
                 # Add answer to the question
-                _question.addAnswer(answer, var, _qRadioButton)
+                _question.addAnswer(answer, var, answerRadioButton)
                 aI += 1
 
             # Append question to the questions array
@@ -266,6 +267,8 @@ class App:
                                                  filetypes=(
                                                      (fdSettings['fileTypes']['JSON'], '*.json'),
                                                      (fdSettings['fileTypes']['all'], '*.*')))
+        if not os.path.isfile(questionsFilePath):
+            return
         self.questionsPATH = questionsFilePath
         self.reloadQuestions()
 

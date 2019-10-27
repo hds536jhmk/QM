@@ -1,5 +1,5 @@
 @echo off
-pyinstaller main.py ^
+pyinstaller main.pyw ^
 	--clean ^
 	--noconfirm ^
 	--noconsole ^
