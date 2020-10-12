@@ -32,6 +32,12 @@ QUESTIONSFOLDER = './questions/'
 # GLOBAL CLASSES
 
 
+# CONTAINER CLASS
+class Container:
+    def __init__(self):
+        pass
+
+
 # QUESTION CLASS:
 #  it holds a question and all the answers to it and manages them
 class Question:
@@ -111,9 +117,9 @@ class App:
             vote = worstVote
 
         # Change points label
-        self.lPoints.config(text=self.childFBottomSettings['lPoints']['text']
-                            + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
-        self.lPoints.pack(side=tk.RIGHT, anchor=tk.S)
+        self.mainWindow.lPoints.config(text=self.childFBottomSettings['lPoints']['text']
+                                       + str(self.points) + '/' + str(maxPoints) + ' - ' + str(vote) + '/' + str(bestVote))
+        self.mainWindow.lPoints.pack(side=tk.RIGHT, anchor=tk.S)
 
     # Makes every radioButton that is the correct answer have the foreground color specified and vice-versa
     def showSolutions(self):
@@ -183,9 +189,9 @@ class App:
     # Creates every widget that has to do with questions
     def createQuestionsWidgets(self):
         # Create Questions Title
-        self.lQuestionsTitle = tk.Label(self.fTop)
-        self.configWidget(self.lQuestionsTitle, self.questionsJSON['title'])
-        self.lQuestionsTitle.pack()
+        self.mainWindow.lQuestionsTitle = tk.Label(self.mainWindow.fTop)
+        self.configWidget(self.mainWindow.lQuestionsTitle, self.questionsJSON['title'])
+        self.mainWindow.lQuestionsTitle.pack()
 
         # Loop through every question in the questions json
         qI = 0
@@ -203,7 +209,7 @@ class App:
                     _questionRow += len(self.questions[key].answers) + 1
 
             # Create Question label
-            questionLabel = tk.Label(self.fMiddle)
+            questionLabel = tk.Label(self.mainWindow.fMiddle)
             if 'questions' in self.questionsConfig:
                 self.configWidget(questionLabel, self.questionsConfig['questions'])
             self.configWidget(questionLabel, question)
@@ -214,7 +220,7 @@ class App:
             var = tk.IntVar()
             for answer in question['answers']:
                 # Create a radiobutton for every answer
-                answerRadioButton = tk.Radiobutton(self.fMiddle, variable=var, value=aI)
+                answerRadioButton = tk.Radiobutton(self.mainWindow.fMiddle, variable=var, value=aI)
                 if 'answers' in self.questionsConfig:
                     self.configWidget(answerRadioButton, self.questionsConfig['answers'])
                 self.configWidget(answerRadioButton, answer)
@@ -235,8 +241,8 @@ class App:
             self.showSolutions()
 
         # Destroy every object related to old questions
-        self.lQuestionsTitle.destroy()
-        for widget in self.fMiddle.winfo_children():
+        self.mainWindow.lQuestionsTitle.destroy()
+        for widget in self.mainWindow.fMiddle.winfo_children():
             widget.destroy()
 
         # Reload questions JSON and variables
@@ -246,7 +252,7 @@ class App:
 
         # Resets points and points' label
         self.points = 0
-        self.lPoints.config(text='')
+        self.mainWindow.lPoints.config(text='')
 
         # Create questions' widgets
         self.createQuestionsWidgets()
@@ -276,64 +282,64 @@ class App:
     def createWidgets(self):
 
         # Create Menu Bar
-        self.mMenuBar = tk.Menu(self.root)
-        self.configWidget(self.mMenuBar, self.childRootSettings['mMenuBar'])
+        self.mainWindow.mMenuBar = tk.Menu(self.root)
+        self.configWidget(self.mainWindow.mMenuBar, self.childRootSettings['mMenuBar'])
 
         # Create File Menu
-        self.mmbFile = tk.Menu(self.mMenuBar, tearoff=0)
-        self.configWidget(self.mmbFile, self.childMMenuBar['mmbFile'])
+        self.mainWindow.mmbFile = tk.Menu(self.mainWindow.mMenuBar, tearoff=0)
+        self.configWidget(self.mainWindow.mmbFile, self.childMMenuBar['mmbFile'])
 
-        self.mMenuBar.add_cascade(label=self.childMMenuBar['mmbFile']['label'], menu=self.mmbFile)
+        self.mainWindow.mMenuBar.add_cascade(label=self.childMMenuBar['mmbFile']['label'], menu=self.mainWindow.mmbFile)
 
         # Create File Menu Commands
-        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['openQuestions']['label'],
-                                 command=self.openQuestions)
-        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadQuestions']['label'],
-                                 command=self.reloadQuestions)
-        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadSettings']['label'],
-                                 command=self.reloadSettings)
-        self.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['exit']['label'],
-                                 command=self.root.quit)
+        self.mainWindow.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['openQuestions']['label'],
+                                            command=self.openQuestions)
+        self.mainWindow.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadQuestions']['label'],
+                                            command=self.reloadQuestions)
+        self.mainWindow.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['reloadSettings']['label'],
+                                            command=self.reloadSettings)
+        self.mainWindow.mmbFile.add_command(label=self.childMMenuBar['mmbFile']['commands']['exit']['label'],
+                                            command=self.root.quit)
 
         # Add MenuBar to root
-        self.root.config(menu=self.mMenuBar)
+        self.root.config(menu=self.mainWindow.mMenuBar)
 
         # Create a frame that stays on the top of the application
-        self.fTop = tk.Frame(self.root)
-        self.configWidget(self.fTop, self.childRootSettings['fTop'])
-        self.fTop.pack(side=tk.TOP, fill=tk.X)
+        self.mainWindow.fTop = tk.Frame(self.root)
+        self.configWidget(self.mainWindow.fTop, self.childRootSettings['fTop'])
+        self.mainWindow.fTop.pack(side=tk.TOP, fill=tk.X)
 
         # Create a frame that stays in the middle of the application
-        self.fMiddle = tk.Frame(self.root)
-        self.configWidget(self.fMiddle, self.childRootSettings['fMiddle'])
-        self.fMiddle.pack(fill=tk.X)
+        self.mainWindow.fMiddle = tk.Frame(self.root)
+        self.configWidget(self.mainWindow.fMiddle, self.childRootSettings['fMiddle'])
+        self.mainWindow.fMiddle.pack(fill=tk.X)
 
         # Create a frame that stays on the bottom of the application
-        self.fBottom = tk.Frame(self.root)
-        self.configWidget(self.fBottom, self.childRootSettings['fBottom'])
-        self.fBottom.pack(side=tk.BOTTOM, fill=tk.X)
+        self.mainWindow.fBottom = tk.Frame(self.root)
+        self.configWidget(self.mainWindow.fBottom, self.childRootSettings['fBottom'])
+        self.mainWindow.fBottom.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Create Application Title
-        self.lTitle = tk.Label(self.fTop)
-        self.configWidget(self.lTitle, self.childFTopSettings['lTitle'])
-        self.lTitle.pack()
+        self.mainWindow.lTitle = tk.Label(self.mainWindow.fTop)
+        self.configWidget(self.mainWindow.lTitle, self.childFTopSettings['lTitle'])
+        self.mainWindow.lTitle.pack()
 
         # Create questions' widgets
         self.createQuestionsWidgets()
 
         # Create Solutions button
-        self.bSolutions = tk.Button(self.fBottom, command=self.showSolutions)
-        self.configWidget(self.bSolutions, self.childFBottomSettings['bSolutions'])
-        self.bSolutions.pack(side=tk.TOP, anchor=tk.N, fill=tk.X)
+        self.mainWindow.bSolutions = tk.Button(self.mainWindow.fBottom, command=self.showSolutions)
+        self.configWidget(self.mainWindow.bSolutions, self.childFBottomSettings['bSolutions'])
+        self.mainWindow.bSolutions.pack(side=tk.TOP, anchor=tk.N, fill=tk.X)
 
         # Create confirm button
-        self.bConfirm = tk.Button(self.fBottom, command=self.checkAnswers)
-        self.configWidget(self.bConfirm, self.childFBottomSettings['bConfirm'])
-        self.bConfirm.pack(side=tk.LEFT, anchor=tk.S)
+        self.mainWindow.bConfirm = tk.Button(self.mainWindow.fBottom, command=self.checkAnswers)
+        self.configWidget(self.mainWindow.bConfirm, self.childFBottomSettings['bConfirm'])
+        self.mainWindow.bConfirm.pack(side=tk.LEFT, anchor=tk.S)
 
         # Create points label
-        self.lPoints = tk.Label(self.fBottom)
-        self.configWidget(self.lPoints, self.childFBottomSettings['lPoints'])
+        self.mainWindow.lPoints = tk.Label(self.mainWindow.fBottom)
+        self.configWidget(self.mainWindow.lPoints, self.childFBottomSettings['lPoints'])
 
     # Class init
     def __init__(self, root):
@@ -364,6 +370,12 @@ class App:
         self.childFTopSettings = self.childRootSettings['fTop']['children']
         self.childFMiddleSettings = self.childRootSettings['fMiddle']['children']
         self.childFBottomSettings = self.childRootSettings['fBottom']['children']
+
+        # Create window containers
+        self.mainWindow = Container()
+        self.editQuestions = Container()
+
+        # Create widgets
         self.createWidgets()
 
 
